@@ -17,12 +17,13 @@ const routers: RouteObject[] = [
             {
                 path: "management",
                 children: [
-                    { path: "notice", element: <Notice /> },
-                    { path: "common-code", element: <CommonCode /> },
-                    { path: "common-code/:groupIdx", element: <DetailCode /> },
-                ],
-            },
-        ],
+                    {
+                        path: "notice",
+                        element: <Notice />
+                    }
+                ]
+            }
+        ]
     },
 ];
 

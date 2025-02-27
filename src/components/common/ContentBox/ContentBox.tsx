@@ -11,7 +11,7 @@ interface ContentBoxProps {
     fullWidth?: boolean;
     bordered?: boolean;
     fontSize?: "small" | "medium" | "large";
-    children: React.ReactNode;
+    children?: React.ReactNode;
 }
 
 export const ContentBox: FC<ContentBoxProps> = ({
