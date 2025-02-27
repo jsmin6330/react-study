@@ -3,8 +3,12 @@ import { StyledTable, StyledTd, StyledTh } from "../../../../common/styled/Style
 import axios, { AxiosResponse } from "axios";
 import { useEffect, useState } from "react";
 import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";
+import { NoticeModal } from "../NoticeModal/NoticeModal";
+import { Portal } from "../../../../common/potal/Portal";
+import { useRecoilState } from "recoil";
+import { modalState } from "../../../../../stores/modalState";
 
-interface INotice {
+export interface INotice {
     noticeId: number;
     title: string;
     content: string;
@@ -22,6 +26,8 @@ export const NoticeMain = () => {
     const [noticeList, setNoticeList] = useState<INotice[]>([]);
     const [noticeCount, setNoticeCount] = useState<number>(0);
     const [cPage, setCPage] = useState<number>(0);
+    const [modal, setModal] = useRecoilState<Boolean>(modalState);
+    const [noticeId, setNoticeId] = useState<number>(0);
 
     useEffect(() => {
         searchNoticeList();
@@ -39,6 +45,11 @@ export const NoticeMain = () => {
             setCPage(currentPage);
         });
     };
+
+    const handlerModal = (id: number) => {
+        setModal(!modal);
+        setNoticeId(id);
+    }
 
     return (
         <>
@@ -59,7 +70,7 @@ export const NoticeMain = () => {
                                 return (
                                     <tr key={notice.noticeId}>
                                         <StyledTd>{notice.noticeId}</StyledTd>
-                                        <StyledTd>{notice.title}</StyledTd>
+                                        <StyledTd onClick={() => handlerModal(notice.noticeId)}>{notice.title}</StyledTd>
                                         <StyledTd>{notice.author}</StyledTd>
                                         <StyledTd>{notice.createdDate}</StyledTd>
                                     </tr>
@@ -79,6 +90,13 @@ export const NoticeMain = () => {
                 itemsCountPerPage={5}
                 activePage={cPage}
             />
+            {
+                modal && (
+                    <Portal>
+                        <NoticeModal noticeId={noticeId} setNoticeId={setNoticeId} />
+                    </Portal>
+                )
+            }
         </>
     );
 };
