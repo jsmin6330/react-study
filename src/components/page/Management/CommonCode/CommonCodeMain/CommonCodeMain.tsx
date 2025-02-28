@@ -1,6 +1,44 @@
+import { useContext, useEffect, useState } from "react";
 import { CommonCodeMainStyled } from "./styled";
+import { CommonCodeContext } from "../../../../../api/Provider/CommonCodeProvider";
+import axios, { AxiosResponse } from "axios";
+import { StyledButton } from "../../../../common/StyledButton/StyledButton";
+
+interface ICommonCode {
+    groupIdx: number;
+    groupCode: string;
+    groupName: string;
+    useYn: string;
+    createdDate: string;
+    author: string;
+    note: string;
+}
 
 export const CommonCodeMain = () => {
+    interface ICommonCodeResponse extends ICommonCode {
+        commonCode: ICommonCode[];
+        commonCodeCnt: number;
+    }
+
+    const { searchKeyword } = useContext(CommonCodeContext);
+    const [commonCodeList, setCommonCodeList] = useState<ICommonCode[]>();
+
+    useEffect(() => {
+        searchCommonCode();
+    }, [searchKeyword]);
+
+    const searchCommonCode = (currentPage?: number) => {
+        currentPage = currentPage || 1;
+
+        axios.post("/management/commonCodeListBody.do", {
+            ...searchKeyword,
+            pageSize: 5,
+            currentPage,
+        }).then((res: AxiosResponse<ICommonCodeResponse>) => {
+            setCommonCodeList(res.data.commonCode);
+        })
+    }
+
     return (
         <CommonCodeMainStyled>
             <table>
@@ -25,9 +63,28 @@ export const CommonCodeMain = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td colSpan={7}>조회 내역이 없습니다.</td>
-                    </tr>
+                    {
+                        commonCodeList?.length > 0 ?
+                            (
+                                commonCodeList.map((commonCode) => {
+                                    return (
+                                        <tr key={commonCode.groupIdx}>
+                                            <td>{commonCode.groupIdx}</td>
+                                            <td>{commonCode.groupCode}</td>
+                                            <td>{commonCode.groupName}</td>
+                                            <td>{commonCode.note}</td>
+                                            <td>{commonCode.createdDate}</td>
+                                            <td>{commonCode.useYn}</td>
+                                            <td><StyledButton>수정</StyledButton></td>
+                                        </tr>
+                                    )
+                                }))
+                            : (
+                                <tr>
+                                    <td colSpan={7}>조회 내역이 없습니다.</td>
+                                </tr>
+                            )
+                    }
                 </tbody>
             </table>
         </CommonCodeMainStyled>
