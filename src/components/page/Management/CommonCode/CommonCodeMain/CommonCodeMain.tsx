@@ -15,7 +15,7 @@ interface ICommonCode {
 }
 
 export const CommonCodeMain = () => {
-    interface ICommonCodeResponse extends ICommonCode {
+    interface ICommonCodeResponse {
         commonCode: ICommonCode[];
         commonCodeCnt: number;
     }
