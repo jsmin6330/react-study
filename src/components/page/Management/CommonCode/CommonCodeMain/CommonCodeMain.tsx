@@ -7,19 +7,10 @@ import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../stores/modalState";
 import { CommonCodeModal } from "../CommonCodeModal/CommonCodeModal";
 import { Portal } from "../../../../common/potal/Portal";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom"
 import { searchApi } from "../../../../../api/CommonCodeApi/searchApi";
 import { CommonCode } from "../../../../../api/api";
-
-interface ICommonCode {
-    groupIdx: number;
-    groupCode: string;
-    groupName: string;
-    useYn: string;
-    createdDate: string;
-    author: string;
-    note: string;
-}
+import { ICommonCode } from "../../../../../models/interface/ICommonCode";
 
 export const CommonCodeMain = () => {
     interface ICommonCodeResponse {
@@ -36,18 +27,6 @@ export const CommonCodeMain = () => {
     useEffect(() => {
         searchCommonCode();
     }, [searchKeyword]);
-
-    // const searchCommonCode = (currentPage?: number) => {
-    //     currentPage = currentPage || 1;
-
-    //     axios.post("/management/commonCodeListBody.do", {
-    //         ...searchKeyword,
-    //         pageSize: 5,
-    //         currentPage,
-    //     }).then((res: AxiosResponse<ICommonCodeResponse>) => {
-    //         setCommonCodeList(res.data.commonCode);
-    //     })
-    // }
 
     const searchCommonCode = async (currentPage?: number) => {
         currentPage = currentPage || 1;

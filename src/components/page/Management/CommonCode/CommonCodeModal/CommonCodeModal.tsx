@@ -7,22 +7,13 @@ import axios, { AxiosResponse } from "axios";
 import { CommonCode } from "../../../../../api/api";
 import { searchApi } from "../../../../../api/CommonCodeApi/searchApi";
 import { postApi } from "../../../../../api/CommonCodeApi/postApi";
+import { ICommonCode } from "../../../../../models/interface/ICommonCode";
 
 
 interface ICommonCodeModalProps {
     groupId: number
     setGroupId: React.Dispatch<React.SetStateAction<number>>;
     postSuccess: () => void;
-}
-
-interface ICommonCode {
-    groupIdx: number;
-    groupCode: string;
-    groupName: string;
-    useYn: string;
-    createdDate: string;
-    author: string;
-    note: string;
 }
 
 const initCommonCode = {
@@ -48,13 +39,6 @@ export const CommonCodeModal: FC<ICommonCodeModalProps> = ({ groupId, setGroupId
         }
     }, [])
 
-    // const commonCodeDetail = () => {
-    //     axios.post("/management/commonCodeDetailBody.do", { groupIdx: groupId })
-    //         .then((res: AxiosResponse<{ detailValue: ICommonCode }>) => {
-    //             setCommonCode(res.data.detailValue);
-    //         });
-    // };
-
     const commonCodeDetail = async () => {
         const result = await searchApi<{ detailValue: ICommonCode }>(
             CommonCode.searchDetail, { groupIdx: groupId })
@@ -63,18 +47,6 @@ export const CommonCodeModal: FC<ICommonCodeModalProps> = ({ groupId, setGroupId
             setCommonCode(result.detailValue);
         }
     };
-
-    // const saveCommonCode = () => {
-    //     axios.post("/management/commonCodeSaveBody.do", commonCode)
-    //         .then((res: AxiosResponse<{ result: string }>) => {
-    //             if (res.data.result === "success") {
-    //                 alert("저장되었습니다.");
-    //                 postSuccess();
-    //             } else if (res.data.result.startsWith("Duplicate")) {
-    //                 alert(`입력하신 그룹코드(${commonCode.groupCode})는 중복입니다.`);
-    //             }
-    //         });
-    // }
 
     const saveCommonCode = async () => {
         const result = await postApi(CommonCode.save, commonCode);
@@ -87,18 +59,6 @@ export const CommonCodeModal: FC<ICommonCodeModalProps> = ({ groupId, setGroupId
         }
     }
 
-    // const updateCommonCode = () => {
-    //     axios.post("/management/commonCodeUpdateBody.do", commonCode)
-    //         .then((res: AxiosResponse<{ result: string }>) => {
-    //             if (res.data.result === "success") {
-    //                 alert("수정되었습니다.");
-    //                 postSuccess();
-    //             } else if (res.data.result.startsWith("Duplicate")) {
-    //                 alert(`입력하신 그룹코드(${commonCode.groupCode})는 중복입니다.`);
-    //             }
-    //         });
-    // }
-
     const updateCommonCode = async () => {
         const result = await postApi(CommonCode.update, commonCode);
 
@@ -109,17 +69,6 @@ export const CommonCodeModal: FC<ICommonCodeModalProps> = ({ groupId, setGroupId
             alert(`입력하신 그룹코드(${commonCode.groupCode})는 중복입니다.`);
         }
     }
-
-
-    // const deleteCommonCode = () => {
-    //     axios.post("/management/commonCodeDeleteBody.do", { groupIdx: groupId })
-    //         .then((res: AxiosResponse<{ result: string }>) => {
-    //             if (res.data.result === "success") {
-    //                 alert("삭제되었습니다.");
-    //                 postSuccess();
-    //             }
-    //         })
-    // }
 
     const deleteCommonCode = async () => {
         const result = await postApi(CommonCode.delete, commonCode);
