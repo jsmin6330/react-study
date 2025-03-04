@@ -106,7 +106,7 @@ export const CommonCodeMain = () => {
             {
                 modal && (
                     <Portal>
-                        <CommonCodeModal groupId={groupId} postSuccess={postSuccess} />
+                        <CommonCodeModal groupId={groupId} setGroupId={setGroupId} postSuccess={postSuccess} />
                     </Portal>
                 )
             }

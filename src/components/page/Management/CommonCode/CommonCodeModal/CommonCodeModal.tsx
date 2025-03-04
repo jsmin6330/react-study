@@ -4,11 +4,11 @@ import { CommonCodeModalStyle } from "./styled";
 import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../stores/modalState";
 import axios, { AxiosResponse } from "axios";
-import { Prev } from "react-bootstrap/esm/PageItem";
 
 
 interface ICommonCodeModalProps {
     groupId: number
+    setGroupId: React.Dispatch<React.SetStateAction<number>>;
     postSuccess: () => void;
 }
 
@@ -32,12 +32,17 @@ const initCommonCode = {
     note: "",
 };
 
-export const CommonCodeModal: FC<ICommonCodeModalProps> = ({ groupId, postSuccess }) => {
+export const CommonCodeModal: FC<ICommonCodeModalProps> = ({ groupId, setGroupId, postSuccess
+}) => {
     const [modal, setModal] = useRecoilState<Boolean>(modalState);
     const [commonCode, setCommonCode] = useState<ICommonCode>(initCommonCode);
 
     useEffect(() => {
         groupId && commonCodeDetail();
+
+        return () => {
+            setGroupId(0);
+        }
     }, [])
 
     const commonCodeDetail = () => {
@@ -53,10 +58,33 @@ export const CommonCodeModal: FC<ICommonCodeModalProps> = ({ groupId, postSucces
                 if (res.data.result === "success") {
                     alert("수정되었습니다.");
                     postSuccess();
+                } else if (res.data.result.startsWith("Duplicate")) {
+                    alert(`입력하신 그룹코드(${commonCode.groupCode})는 중복입니다.`);
+                }
+            });
+    }
+
+    const saveCommonCode = () => {
+        axios.post("/management/commonCodeSaveBody.do", commonCode)
+            .then((res: AxiosResponse<{ result: string }>) => {
+                if (res.data.result === "success") {
+                    alert("저장되었습니다.");
+                    postSuccess();
+                } else if (res.data.result.startsWith("Duplicate")) {
+                    alert(`입력하신 그룹코드(${commonCode.groupCode})는 중복입니다.`);
+                }
+            });
+    }
+
+    const deleteCommonCode = () => {
+        axios.post("/management/commonCodeDeleteBody.do", { groupIdx: groupId })
+            .then((res: AxiosResponse<{ result: string }>) => {
+                if (res.data.result === "success") {
+                    alert("삭제되었습니다.");
+                    postSuccess();
                 }
             })
     }
-
 
     return (
         <CommonCodeModalStyle>
@@ -91,7 +119,13 @@ export const CommonCodeModal: FC<ICommonCodeModalProps> = ({ groupId, postSucces
                     </div>
                 </label>
                 <div className={"button-container"}>
-                    <button type='button' onClick={() => { updateCommonCode() }}>저장</button>
+                    <button type='button' onClick={groupId ? updateCommonCode : saveCommonCode}>
+                        {groupId ? "수정" : "저장"}
+                    </button>
+                    {
+                        !!groupId &&
+                        <button type='button' onClick={deleteCommonCode}>삭제</button>
+                    }
                     <button type='button' onClick={() => { setModal(!modal) }}>나가기</button>
                 </div>
             </div>

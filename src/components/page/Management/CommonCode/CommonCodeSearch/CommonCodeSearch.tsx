@@ -4,6 +4,8 @@ import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelect
 import { CommonCodeSearchStyled } from "./styled"
 import { StyledInput } from "../../../../common/StyledInput/StyledInput";
 import { CommonCodeContext } from "../../../../../api/Provider/CommonCodeProvider";
+import { useRecoilState } from "recoil";
+import { modalState } from "../../../../../stores/modalState";
 
 export const CommonCodeSearch = () => {
     const options = [
@@ -14,6 +16,7 @@ export const CommonCodeSearch = () => {
     const [selectValue, setSelectValue] = useState<string>("groupName");
     const inputValue = useRef<HTMLInputElement>();
     const { setSearchKeyword } = useContext(CommonCodeContext);
+    const [modal, setModal] = useRecoilState<Boolean>(modalState);
 
 
     const handlerSearch = () => {
@@ -28,7 +31,7 @@ export const CommonCodeSearch = () => {
             <StyledSelectBox options={options} value={selectValue} onChange={setSelectValue} />
             <StyledInput ref={inputValue} />
             <StyledButton onClick={handlerSearch}>검색</StyledButton>
-            <StyledButton>등록</StyledButton>
+            <StyledButton onClick={() => setModal(!modal)}>등록</StyledButton>
         </CommonCodeSearchStyled >
     );
 };
