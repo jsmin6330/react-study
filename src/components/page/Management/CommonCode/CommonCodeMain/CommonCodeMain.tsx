@@ -7,6 +7,7 @@ import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../stores/modalState";
 import { CommonCodeModal } from "../CommonCodeModal/CommonCodeModal";
 import { Portal } from "../../../../common/potal/Portal";
+import { useNavigate } from "react-router-dom";
 
 interface ICommonCode {
     groupIdx: number;
@@ -28,6 +29,7 @@ export const CommonCodeMain = () => {
     const [commonCodeList, setCommonCodeList] = useState<ICommonCode[]>();
     const [modal, setModal] = useRecoilState<Boolean>(modalState);
     const [groupId, setGroupId] = useState<number>(0);
+    const navigate = useNavigate();
 
     useEffect(() => {
         searchCommonCode();
@@ -86,7 +88,16 @@ export const CommonCodeMain = () => {
                                     return (
                                         <tr key={commonCode.groupIdx}>
                                             <td>{commonCode.groupIdx}</td>
-                                            <td>{commonCode.groupCode}</td>
+                                            <td className="td-pointer"
+                                                onClick={() => {
+                                                    navigate(`${commonCode.groupIdx}`, {
+                                                        state: {
+                                                            groupCode: commonCode.groupCode
+                                                        }
+                                                    })
+                                                }}>
+                                                {commonCode.groupCode}
+                                            </td>
                                             <td>{commonCode.groupName}</td>
                                             <td>{commonCode.note}</td>
                                             <td>{commonCode.createdDate}</td>
