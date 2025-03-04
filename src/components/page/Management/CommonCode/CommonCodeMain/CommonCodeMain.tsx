@@ -3,6 +3,10 @@ import { CommonCodeMainStyled } from "./styled";
 import { CommonCodeContext } from "../../../../../api/Provider/CommonCodeProvider";
 import axios, { AxiosResponse } from "axios";
 import { StyledButton } from "../../../../common/StyledButton/StyledButton";
+import { useRecoilState } from "recoil";
+import { modalState } from "../../../../../stores/modalState";
+import { CommonCodeModal } from "../CommonCodeModal/CommonCodeModal";
+import { Portal } from "../../../../common/potal/Portal";
 
 interface ICommonCode {
     groupIdx: number;
@@ -22,6 +26,8 @@ export const CommonCodeMain = () => {
 
     const { searchKeyword } = useContext(CommonCodeContext);
     const [commonCodeList, setCommonCodeList] = useState<ICommonCode[]>();
+    const [modal, setModal] = useRecoilState<Boolean>(modalState);
+    const [groupId, setGroupId] = useState<number>(0);
 
     useEffect(() => {
         searchCommonCode();
@@ -37,6 +43,16 @@ export const CommonCodeMain = () => {
         }).then((res: AxiosResponse<ICommonCodeResponse>) => {
             setCommonCodeList(res.data.commonCode);
         })
+    }
+
+    const handlerModal = (id: number) => {
+        setModal(!modal);
+        setGroupId(id);
+    }
+
+    const postSuccess = () => {
+        setModal(!modal);
+        searchCommonCode();
     }
 
     return (
@@ -75,7 +91,7 @@ export const CommonCodeMain = () => {
                                             <td>{commonCode.note}</td>
                                             <td>{commonCode.createdDate}</td>
                                             <td>{commonCode.useYn}</td>
-                                            <td><StyledButton>수정</StyledButton></td>
+                                            <td><StyledButton onClick={() => { handlerModal(commonCode.groupIdx) }}>수정</StyledButton></td>
                                         </tr>
                                     )
                                 }))
@@ -87,6 +103,13 @@ export const CommonCodeMain = () => {
                     }
                 </tbody>
             </table>
+            {
+                modal && (
+                    <Portal>
+                        <CommonCodeModal groupId={groupId} postSuccess={postSuccess} />
+                    </Portal>
+                )
+            }
         </CommonCodeMainStyled>
     );
 };
